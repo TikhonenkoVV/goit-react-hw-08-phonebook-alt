@@ -15,3 +15,5 @@ export const selectFilteredContacts = createSelector(
     }
 );
 export const selectIsLoading = state => state.contacts.isLoading;
+
+export const selectRefreshToken = state => state.auth.refreshToken;

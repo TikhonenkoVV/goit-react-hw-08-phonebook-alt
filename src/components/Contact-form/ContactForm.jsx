@@ -32,14 +32,17 @@ export const ContactForm = () => {
             validationSchema={validationSchema}
             initialValues={{
                 name: '',
-                number: '',
+                surname: '',
+                phone: '',
+                email: '',
+                img: '',
             }}
             onSubmit={(values, { resetForm }) => {
                 const isNameExist = contacts.find(
                     val => val.name.toLowerCase() === values.name.toLowerCase()
                 );
                 const isNumberExist = contacts.find(
-                    val => val.number === values.number
+                    val => val.phone === values.phone
                 );
                 if (isNameExist) {
                     toast(`${values.name} is already in contacts.`);
@@ -47,7 +50,7 @@ export const ContactForm = () => {
                 }
                 if (isNumberExist) {
                     toast(
-                        `${values.number} is already in contacts as ${isNumberExist.name}.`
+                        `${values.phone} is already in contacts as ${isNumberExist.name}.`
                     );
                     return;
                 }
@@ -83,9 +86,21 @@ export const ContactForm = () => {
                                 onChange={handleChange}
                             />
                             <FormItem
+                                type="text"
+                                name="surname"
+                                use="contact"
+                                onChange={handleChange}
+                            />
+                            <FormItem
                                 type="tel"
-                                name="number"
+                                name="phone"
                                 use="phone"
+                                onChange={handleChange}
+                            />
+                            <FormItem
+                                type="email"
+                                name="email"
+                                use="email"
                                 onChange={handleChange}
                             />
                             <SubmitButton type="submit">

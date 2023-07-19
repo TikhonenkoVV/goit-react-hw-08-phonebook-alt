@@ -7,8 +7,9 @@ import {
 } from './authOperations';
 
 const initialState = {
-    user: { name: null, email: null },
-    token: null,
+    user: { name: '', email: '', subscription: null },
+    accessToken: null,
+    refreshToken: null,
     isSignedIn: false,
     isLoading: false,
     error: null,
@@ -24,7 +25,8 @@ const authSlice = createSlice({
             })
             .addCase(hendleSignUp.fulfilled, (state, action) => {
                 state.user = action.payload.user;
-                state.token = action.payload.token;
+                state.accessToken = action.payload.tokens.accessToken;
+                state.refreshToken = action.payload.tokens.refreshToken;
                 state.isSignedIn = true;
                 state.isLoading = false;
                 state.error = null;
@@ -38,7 +40,8 @@ const authSlice = createSlice({
             })
             .addCase(hendleSignIn.fulfilled, (state, action) => {
                 state.user = action.payload.user;
-                state.token = action.payload.token;
+                state.accessToken = action.payload.tokens.accessToken;
+                state.refreshToken = action.payload.tokens.refreshToken;
                 state.isSignedIn = true;
                 state.isLoading = false;
                 state.error = null;
@@ -51,8 +54,9 @@ const authSlice = createSlice({
                 state.isLoading = true;
             })
             .addCase(hendleSignOut.fulfilled, state => {
-                state.user = { name: null, email: null };
-                state.token = null;
+                state.user = { name: '', email: '', subscription: null };
+                state.accessToken = null;
+                state.refreshToken = null;
                 state.isSignedIn = false;
                 state.isLoading = false;
                 state.error = null;
@@ -71,6 +75,7 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(hendleRefreshUser.rejected, (state, action) => {
+                console.log('payload :', action.payload);
                 state.isLoading = false;
                 state.error = action.payload;
             });

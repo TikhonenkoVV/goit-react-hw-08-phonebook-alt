@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import {
     BtnDel,
-    ContactLink,
+    BtnEdit,
+    BtnFavorite,
     ContactListHeader,
     ContactListHeaderBox,
     ContactListSection,
+    ContactWrapper,
     FirstElement,
     Item,
     List,
@@ -13,7 +15,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { selectFilteredContacts } from 'store/selector';
 import { Container } from 'components/App.styled';
-import avatar from '../../img/avatar-default.png';
 import { useLocation } from 'react-router-dom';
 import sprite from '../../img/icons.svg';
 import { Svg } from 'components/icon/Icon';
@@ -22,6 +23,7 @@ import {
     hendleDeleteContact,
     hendleFetchContact,
 } from 'store/contacts/contactsOperations';
+import avatar from '../../img/avatar-default.png';
 
 export const ContactList = () => {
     const dispatch = useDispatch();
@@ -35,53 +37,65 @@ export const ContactList = () => {
 
     const location = useLocation();
     return (
-        <>
-            <ContactListSection>
-                <Container>
-                    <ContactListHeader>
-                        <ContactListHeaderBox>
-                            <FirstElement>Name</FirstElement>
-                            <p>Phone mumber</p>
-                            <p>E-mail</p>
-                        </ContactListHeaderBox>
-                    </ContactListHeader>
-                    <List>
-                        {list.map(({ id, name, number }) => {
-                            return (
-                                <Item key={id}>
-                                    <ContactLink
-                                        to={`contact/${id}`}
-                                        state={{ from: location }}
-                                    >
-                                        <NameWrapper>
-                                            <img
-                                                src={avatar}
-                                                alt="avatar"
-                                                width={30}
-                                                height={30}
-                                            />
-                                            <p>{name}</p>
-                                        </NameWrapper>
-                                        <p>{number}</p>
-                                        <p></p>
-                                    </ContactLink>
-                                    <BtnDel
-                                        type="button"
-                                        onClick={() => delContact(id)}
-                                    >
-                                        <Svg
-                                            w={20}
-                                            h={20}
-                                            use={`${sprite}#icon-del-contact`}
+        <ContactListSection>
+            <Container>
+                <ContactListHeader>
+                    <ContactListHeaderBox>
+                        <FirstElement>Name</FirstElement>
+                        <p>Phone mumber</p>
+                        <p>E-mail</p>
+                    </ContactListHeaderBox>
+                </ContactListHeader>
+                <List>
+                    {list.map(({ _id, name, phone, email, img }) => {
+                        return (
+                            <Item key={_id}>
+                                <ContactWrapper>
+                                    <NameWrapper>
+                                        <img
+                                            src={img === '' ? avatar : img}
+                                            alt="avatar"
+                                            width={30}
+                                            height={30}
                                         />
-                                    </BtnDel>
-                                </Item>
-                            );
-                        })}
-                    </List>
-                </Container>
-            </ContactListSection>
-        </>
+                                        <p>{name}</p>
+                                    </NameWrapper>
+                                    <p>{phone}</p>
+                                    <p>{email}</p>
+                                </ContactWrapper>
+                                <BtnEdit
+                                    to={`contact/${_id}`}
+                                    state={{ from: location }}
+                                >
+                                    <Svg
+                                        w={20}
+                                        h={20}
+                                        use={`${sprite}#icon-pencil`}
+                                    />
+                                </BtnEdit>
+                                <BtnDel
+                                    type="button"
+                                    onClick={() => delContact(_id)}
+                                >
+                                    <Svg
+                                        w={20}
+                                        h={20}
+                                        use={`${sprite}#icon-del-contact`}
+                                    />
+                                </BtnDel>
+                                <BtnFavorite type="button" onClick={() => {}}>
+                                    <Svg
+                                        w={20}
+                                        h={20}
+                                        use={`${sprite}#icon-favorite`}
+                                    />
+                                </BtnFavorite>
+                            </Item>
+                        );
+                    })}
+                </List>
+            </Container>
+        </ContactListSection>
     );
 };
 
@@ -90,7 +104,9 @@ ContactList.propTypes = {
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
-            number: PropTypes.string.isRequired,
+            phone: PropTypes.string.isRequired,
+            email: PropTypes.string.isRequired,
+            img: PropTypes.string.isRequired,
         })
     ),
 };

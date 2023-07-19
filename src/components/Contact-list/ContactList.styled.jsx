@@ -6,7 +6,7 @@ export const ContactListSection = styled.section`
 `;
 
 export const ContactListHeader = styled.div`
-    padding: 15px 50px 15px 10px;
+    padding: 15px 130px 15px 10px;
     border-bottom: 1px solid grey;
 `;
 
@@ -34,7 +34,7 @@ export const Item = styled.li`
     }
 `;
 
-export const ContactLink = styled(Link)`
+export const ContactWrapper = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     width: calc(100% - 30px);
@@ -67,8 +67,37 @@ export const BtnDel = styled.button`
     border-radius: 4px;
     background-color: ${props => props.theme.colors.btn};
     transition: color 250ms;
-    &:hover,
-    &:focus {
+    &:hover {
+        color: ${props => props.theme.colors.hover};
+    }
+`;
+
+export const BtnEdit = styled(Link)`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background-color: ${props => props.theme.colors.btn};
+    transition: color 250ms;
+    &:hover {
+        color: ${props => props.theme.colors.hover};
+    }
+`;
+
+export const BtnFavorite = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background-color: ${props => props.theme.colors.btn};
+    transition: color 250ms;
+    &:hover {
         color: ${props => props.theme.colors.hover};
     }
 `;

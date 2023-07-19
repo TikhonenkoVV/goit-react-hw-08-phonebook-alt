@@ -1,15 +1,21 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { normalizeContact } from 'services/normalize';
 
-axios.defaults.baseURL = 'https://connections-api.herokuapp.com';
+axios.defaults.baseURL =
+    'https://murmuring-reaches-74476-7a9ce3386298.herokuapp.com/api';
+// axios.defaults.baseURL = 'http://localhost:5000/api';
 
 export const hendleFetchContact = createAsyncThunk(
     'contacts/fetchAll',
     async (_, { rejectWithValue }) => {
         try {
+            let array = [];
             const { data } = await axios.get('/contacts');
-
-            return data;
+            data.map(contact => {
+                return array.push(normalizeContact(contact));
+            });
+            return array;
         } catch (err) {
             rejectWithValue(err.message);
         }
@@ -20,8 +26,8 @@ export const hendleFetchContactById = createAsyncThunk(
     'contacts/getContact',
     async (contactId, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`/contacts`);
-            const res = data.filter(el => el.id === contactId);
+            const { data } = await axios.get(`/contacts/${contactId}`);
+            const res = normalizeContact(data);
             return res;
         } catch (err) {
             rejectWithValue(err.message);
@@ -45,8 +51,8 @@ export const hendleAddContact = createAsyncThunk(
     'contacts/addContact',
     async (newContact, { rejectWithValue }) => {
         try {
-            const response = await axios.post('/contacts', newContact);
-            return response.data;
+            const { data } = await axios.post('/contacts', newContact);
+            return data;
         } catch (err) {
             rejectWithValue(err.message);
         }

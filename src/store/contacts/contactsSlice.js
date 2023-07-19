@@ -5,7 +5,6 @@ import {
     hendleFetchContact,
     hendleFetchContactById,
 } from './contactsOperations';
-import { normalizeContact } from 'services/normalize';
 
 const initialState = {
     contactsArray: [],
@@ -39,8 +38,7 @@ const contactsSlice = createSlice({
             .addCase(hendleFetchContactById.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.error = null;
-                const res = normalizeContact(action.payload);
-                state.contact = res;
+                state.contact = action.payload;
             })
             .addCase(hendleFetchContactById.rejected, (state, action) => {
                 state.isLoading = false;

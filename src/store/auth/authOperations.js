@@ -1,8 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// axios.defaults.baseURL = 'https://connections-api.herokuapp.com';
-
 const setAuthHeader = token => {
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
@@ -12,10 +10,10 @@ export const hendleSignUp = createAsyncThunk(
     async (credentials, { rejectWithValue }) => {
         try {
             const { data } = await axios.post('/users/signup', credentials);
-            setAuthHeader(data.token);
+            setAuthHeader(data.tokens.accessToken);
             return data;
         } catch (err) {
-            rejectWithValue(err.message);
+            return rejectWithValue(err.message);
         }
     }
 );
@@ -24,11 +22,11 @@ export const hendleSignIn = createAsyncThunk(
     'auth/signIn',
     async (credentials, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post('/users/login', credentials);
-            setAuthHeader(data.token);
+            const { data } = await axios.post('/users/signin', credentials);
+            setAuthHeader(data.tokens.accessToken);
             return data;
         } catch (err) {
-            rejectWithValue(err.message);
+            return rejectWithValue(err.message);
         }
     }
 );
@@ -40,7 +38,7 @@ export const hendleSignOut = createAsyncThunk(
             await axios.post('/users/logout');
             setAuthHeader('');
         } catch (err) {
-            rejectWithValue(err.message);
+            return rejectWithValue(err.message);
         }
     }
 );
@@ -49,7 +47,7 @@ export const hendleRefreshUser = createAsyncThunk(
     'auth/refresh',
     async (_, { rejectWithValue, getState }) => {
         const state = getState();
-        const persistToken = state.auth.token;
+        const persistToken = state.auth.accessToken;
         if (persistToken === null) {
             return rejectWithValue();
         }
@@ -59,7 +57,26 @@ export const hendleRefreshUser = createAsyncThunk(
             const { data } = await axios.get('/users/current');
             return data;
         } catch (err) {
-            rejectWithValue(err.message);
+            return rejectWithValue(err.response.status);
+        }
+    }
+);
+
+export const hendleRefreshToken = createAsyncThunk(
+    'auth/refreshtoken',
+    async (_, { rejectWithValue, getState }) => {
+        const state = getState();
+        const persistToken = state.auth.accessToken;
+        if (persistToken === null) {
+            return rejectWithValue();
+        }
+        try {
+            const { data } = await axios.get('/users/current', {
+                refreshToken: persistToken,
+            });
+            return data;
+        } catch (err) {
+            return rejectWithValue(err.response.statusText);
         }
     }
 );
